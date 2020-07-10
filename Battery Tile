@@ -1,0 +1,50 @@
+/*
+Virtual Device with `battery` value to pass details to Actiontiles object.
+*/
+
+metadata {
+    definition(name: "Battery Tile", namespace: "s.tavener", author: "Stavener" ) {
+        
+        capability "Battery"  
+        capability "Sensor"
+        capability "Actuator"
+        
+        command "setbattery"
+		command "getbattery"
+        
+		attribute "battery", "number"    
+    }
+      
+    tiles {   
+ 		valueTile("battery", "device.battery", width: 3, height: 1) {
+    		state "default", label:'${currentValue} number}'
+		}      
+    }
+
+}
+
+def initialize() {
+	state.value = 0.0
+    state.unit = "%"
+	log.debug("init")
+}
+
+def installed() {
+	log.debug "Installed"
+    initialize()
+}
+
+def updated() {
+	log.debug "Updated"
+    initialize()
+}
+
+def setbattery(new_value) {
+	log.debug "setbattery called battery=$new_value"
+    sendEvent(name:"battery", value: new_value, unit:"%")
+}
+
+private getbattery() {
+    value = device.currentState("battery")
+    return value
+}
