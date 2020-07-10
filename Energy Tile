@@ -1,0 +1,49 @@
+/*
+Virtual Device with `energy` value to pass details to Actiontiles object.
+*/
+
+metadata {
+    definition(name: "Energy Tile", namespace: "s.tavener", author: "Stavener" ) {
+        
+        capability "Energy Meter"  
+        capability "Sensor"
+        capability "Actuator"
+        
+        command "setenergy"
+		command "getenergy"
+        
+		attribute "energy", "number"    
+    }
+      
+    tiles {   
+ 		valueTile("energy", "device.energy", width: 3, height: 1) {
+    		state "default", label:'${currentValue} number}'
+		}      
+    }
+
+}
+
+def initialize() {
+	state.energy = 0.0
+	log.debug("init")
+}
+
+def installed() {
+	log.debug "Installed"
+    initialize()
+}
+
+def updated() {
+	log.debug "Updated"
+    initialize()
+}
+
+def setenergy(new_value) {
+	log.debug "setenergy called energy=$new_value"
+    sendEvent(name:"energy", value: new_value, unit:"p/Kw")
+}
+
+private getenergy() {
+    value = device.currentState("energy")
+    return value
+}
