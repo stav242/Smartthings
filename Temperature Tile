@@ -1,0 +1,50 @@
+/*
+Virtual Device with `energy` value to pass details to Actiontiles object.
+*/
+
+metadata {
+    definition(name: "Temperature Tile", namespace: "s.tavener", author: "Stavener" ) {
+        
+        capability "Temperature Measurement"  
+        capability "Sensor"
+        capability "Actuator"
+        
+        command "settemperature"
+		command "gettemperature"
+        
+		attribute "temperature", "number"    
+    }
+      
+    tiles {   
+ 		valueTile("temperature", "device.temperature", width: 3, height: 1) {
+    		state "default", label:'${currentValue} number}'
+		}      
+    }
+
+}
+
+def initialize() {
+	state.value = 0.0
+    state.unit = "C"
+	log.debug("init")
+}
+
+def installed() {
+	log.debug "Installed"
+    initialize()
+}
+
+def updated() {
+	log.debug "Updated"
+    initialize()
+}
+
+def settemperature(new_value) {
+	log.debug "settemperature called temperature=$new_value"
+    sendEvent(name:"temperature", value: new_value, unit:"C")
+}
+
+private gettemperature() {
+    value = device.currentState("temperature")
+    return value
+}
